@@ -20,6 +20,7 @@ namespace elle
             services.AddScoped<ImmovableService>();
             services.AddScoped<Context>();
             services.AddScoped<Authorization>();
+            services.AddScoped<AdminPanel>();
 
             var serviceProvider = services.BuildServiceProvider();
 

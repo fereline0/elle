@@ -43,6 +43,7 @@
             TableViewer.Name = "TableViewer";
             TableViewer.Size = new Size(624, 427);
             TableViewer.TabIndex = 0;
+            TableViewer.CellEndEdit += TableViewer_CellEndEdit;
             // 
             // HandleDelete
             // 

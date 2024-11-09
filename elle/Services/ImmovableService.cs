@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using elle.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace elle.Services
 {
@@ -29,8 +28,26 @@ namespace elle.Services
             }
 
             _context.Immovables.Remove(immovable);
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
             return true;
+        }
+
+        public void Add(Immovable immovable)
+        {
+            _context.Immovables.Add(immovable);
+            _context.SaveChanges();
+        }
+
+        public void Update(Immovable immovable)
+        {
+            var existingImmovable = _context.Immovables.Find(immovable.Id);
+            if (existingImmovable != null)
+            {
+                existingImmovable.Name = immovable.Name;
+                existingImmovable.Address = immovable.Address;
+                existingImmovable.Price = immovable.Price;
+                _context.SaveChanges();
+            }
         }
     }
 }

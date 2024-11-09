@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using elle.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace elle.Services
 {
@@ -39,6 +35,24 @@ namespace elle.Services
             _context.Users.Remove(user);
             _context.SaveChanges();
             return true;
+        }
+
+        public void Add(User user)
+        {
+            _context.Users.Add(user);
+            _context.SaveChanges();
+        }
+
+        public void Update(User user)
+        {
+            var existingUser = _context.Users.Find(user.Id);
+            if (existingUser != null)
+            {
+                existingUser.Login = user.Login;
+                existingUser.Password = user.Password;
+                existingUser.Role = user.Role;
+                _context.SaveChanges();
+            }
         }
     }
 }

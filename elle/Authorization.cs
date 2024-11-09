@@ -1,36 +1,40 @@
 using System.Windows.Forms;
 using elle.Models;
 using elle.Services;
-using Microsoft.VisualBasic.Logging;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace elle
 {
     public partial class Authorization : Form
     {
         private readonly UserService _userService;
-        private readonly ImmovableService _immovableService;
         private readonly Context _context;
+        private readonly IServiceProvider _serviceProvider;
 
         public Authorization(
             UserService userService,
-            ImmovableService immovableService,
-            Context context
+            Context context,
+            IServiceProvider serviceProvider
         )
         {
             InitializeComponent();
             _userService = userService;
-            _immovableService = immovableService;
             _context = context;
+            _serviceProvider = serviceProvider;
+        }
+
+        private bool Authorize(string login, string password)
+        {
+            User user = _userService.FindUserByLogin(login);
+
+            return user != null && user.Password == password;
         }
 
         private void HandleAuthorize_Click(object sender, EventArgs e)
         {
-            User user = _userService.FindUserByLogin(Login.Text);
-
-            if (user != null && user.Password == Password.Text)
+            if (Authorize(Login.Text, Password.Text))
             {
-                AdminPanel adminPanel = new AdminPanel(_userService, _immovableService);
-
+                AdminPanel adminPanel = _serviceProvider.GetRequiredService<AdminPanel>();
                 adminPanel.ShowDialog();
             }
             else
@@ -42,12 +46,6 @@ namespace elle
                     MessageBoxIcon.Error
                 );
             }
-        }
-
-        protected override void OnFormClosing(FormClosingEventArgs e)
-        {
-            _context.Dispose();
-            base.OnFormClosing(e);
         }
     }
 }
