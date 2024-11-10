@@ -1,14 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using elle.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace elle.Services
 {
-    public class ImmovableService
+    internal class HomeService
     {
         private readonly Context _context;
 
-        public ImmovableService(Context context)
+        public HomeService(Context context)
         {
             _context = context;
         }

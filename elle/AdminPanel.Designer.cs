@@ -32,6 +32,8 @@
             HandleDelete = new Button();
             RefreshTable = new Button();
             TableSelector = new ComboBox();
+            HandleAdd = new Button();
+            DynamicFieldsPanel = new Panel();
             ((System.ComponentModel.ISupportInitialize)TableViewer).BeginInit();
             SuspendLayout();
             // 
@@ -41,25 +43,24 @@
             TableViewer.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             TableViewer.Location = new Point(12, 12);
             TableViewer.Name = "TableViewer";
-            TableViewer.Size = new Size(624, 427);
+            TableViewer.Size = new Size(624, 477);
             TableViewer.TabIndex = 0;
             TableViewer.CellEndEdit += TableViewer_CellEndEdit;
             // 
             // HandleDelete
             // 
             HandleDelete.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            HandleDelete.Location = new Point(642, 387);
+            HandleDelete.Location = new Point(642, 437);
             HandleDelete.Name = "HandleDelete";
             HandleDelete.Size = new Size(156, 23);
             HandleDelete.TabIndex = 1;
             HandleDelete.Text = "Delete";
-            HandleDelete.UseVisualStyleBackColor = true;
             HandleDelete.Click += HandleDelete_Click;
             // 
             // RefreshTable
             // 
             RefreshTable.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
-            RefreshTable.Location = new Point(642, 416);
+            RefreshTable.Location = new Point(642, 466);
             RefreshTable.Name = "RefreshTable";
             RefreshTable.Size = new Size(156, 23);
             RefreshTable.TabIndex = 2;
@@ -69,6 +70,7 @@
             // 
             // TableSelector
             // 
+            TableSelector.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             TableSelector.FormattingEnabled = true;
             TableSelector.Location = new Point(642, 12);
             TableSelector.Name = "TableSelector";
@@ -76,11 +78,33 @@
             TableSelector.TabIndex = 3;
             TableSelector.SelectedIndexChanged += TableSelector_SelectedIndexChanged;
             // 
+            // HandleAdd
+            // 
+            HandleAdd.Anchor = AnchorStyles.Bottom | AnchorStyles.Right;
+            HandleAdd.BackgroundImageLayout = ImageLayout.Center;
+            HandleAdd.Location = new Point(642, 408);
+            HandleAdd.Name = "HandleAdd";
+            HandleAdd.Size = new Size(156, 23);
+            HandleAdd.TabIndex = 4;
+            HandleAdd.Text = "Add";
+            HandleAdd.UseVisualStyleBackColor = true;
+            HandleAdd.Click += HandleAdd_Click;
+            // 
+            // DynamicFieldsPanel
+            // 
+            DynamicFieldsPanel.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Right;
+            DynamicFieldsPanel.Location = new Point(642, 41);
+            DynamicFieldsPanel.Name = "DynamicFieldsPanel";
+            DynamicFieldsPanel.Size = new Size(156, 361);
+            DynamicFieldsPanel.TabIndex = 5;
+            // 
             // AdminPanel
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(810, 451);
+            ClientSize = new Size(810, 501);
+            Controls.Add(DynamicFieldsPanel);
+            Controls.Add(HandleAdd);
             Controls.Add(TableSelector);
             Controls.Add(RefreshTable);
             Controls.Add(HandleDelete);
@@ -97,5 +121,7 @@
         private Button HandleDelete;
         private Button RefreshTable;
         private ComboBox TableSelector;
+        private Button HandleAdd;
+        private Panel DynamicFieldsPanel;
     }
 }

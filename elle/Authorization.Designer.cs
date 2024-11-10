@@ -45,24 +45,27 @@
             // 
             // Login
             // 
+            Login.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Login.Location = new Point(12, 27);
             Login.Name = "Login";
-            Login.Size = new Size(100, 23);
+            Login.Size = new Size(452, 23);
             Login.TabIndex = 1;
             // 
             // Password
             // 
+            Password.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             Password.Location = new Point(12, 56);
             Password.Name = "Password";
             Password.PasswordChar = '*';
-            Password.Size = new Size(100, 23);
+            Password.Size = new Size(452, 23);
             Password.TabIndex = 2;
             // 
             // HandleAuthorize
             // 
+            HandleAuthorize.Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right;
             HandleAuthorize.Location = new Point(12, 85);
             HandleAuthorize.Name = "HandleAuthorize";
-            HandleAuthorize.Size = new Size(75, 23);
+            HandleAuthorize.Size = new Size(452, 23);
             HandleAuthorize.TabIndex = 3;
             HandleAuthorize.Text = "Authorize";
             HandleAuthorize.UseVisualStyleBackColor = true;
@@ -72,7 +75,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
+            ClientSize = new Size(476, 232);
             Controls.Add(HandleAuthorize);
             Controls.Add(Password);
             Controls.Add(Login);
