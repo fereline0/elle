@@ -18,6 +18,7 @@ namespace elle
             var services = new ServiceCollection();
             services.AddScoped<UserService>();
             services.AddScoped<ImmovableService>();
+            services.AddScoped<HomeService>();
             services.AddScoped<Context>();
             services.AddScoped<Authorization>();
             services.AddScoped<AdminPanel>();

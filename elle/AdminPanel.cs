@@ -10,17 +10,23 @@ namespace elle
     {
         private readonly UserService _userService;
         private readonly ImmovableService _immovableService;
+        private readonly HomeService _homeService;
 
-        private readonly List<string> _tables = new List<string> { "Users", "Immovable" };
+        private readonly List<string> _tables = new List<string> { "Users", "Immovable", "Home" };
         private readonly Dictionary<string, Action<int>> _updateActions;
         private readonly Dictionary<string, Action> _addActions;
         private bool _isUpdating = false;
 
-        public AdminPanel(UserService userService, ImmovableService immovableService)
+        public AdminPanel(
+            UserService userService,
+            ImmovableService immovableService,
+            HomeService homeService
+        )
         {
             InitializeComponent();
             _userService = userService;
             _immovableService = immovableService;
+            _homeService = homeService;
 
             TableSelector.DataSource = _tables;
 
@@ -28,12 +34,14 @@ namespace elle
             {
                 { "Users", UpdateUser },
                 { "Immovable", UpdateImmovable },
+                { "Home", UpdateHome },
             };
 
             _addActions = new Dictionary<string, Action>
             {
                 { "Users", AddUser },
                 { "Immovable", AddImmovable },
+                { "Home", AddHome },
             };
 
             LoadData(TableSelector.SelectedItem.ToString());
@@ -47,6 +55,7 @@ namespace elle
                 {
                     "Users" => _userService.GetAll(),
                     "Immovable" => _immovableService.GetAll(),
+                    "Home" => _homeService.GetAll(),
                     _ => throw new ArgumentException("Invalid table name"),
                 };
             }
@@ -91,6 +100,7 @@ namespace elle
             {
                 "Users" => _userService.DeleteById(id),
                 "Immovable" => _immovableService.DeleteById(id),
+                "Home" => _homeService.DeleteById(id),
                 _ => throw new ArgumentException("Invalid table name"),
             };
 
@@ -136,7 +146,8 @@ namespace elle
             var fields = tableName switch
             {
                 "Users" => new List<string> { "Login", "Password", "Role" },
-                "Immovable" => new List<string> { "Name", "Address", "Price" },
+                "Immovable" => new List<string> { "Name", "Address", "Price", "HomeId" },
+                "Home" => new List<string> { "Name", "CityId" },
                 _ => throw new ArgumentException("Invalid table name"),
             };
 
@@ -190,16 +201,29 @@ namespace elle
                 Name = GetTextBoxValue("NameTextBox"),
                 Address = GetTextBoxValue("AddressTextBox"),
                 Price = decimal.Parse(GetTextBoxValue("PriceTextBox")),
+                HomeId = int.Parse(GetTextBoxValue("CityIdTextBox")),
             };
 
             _immovableService.Add(newImmovable);
             LoadData(TableSelector.SelectedItem.ToString());
         }
 
+        private void AddHome()
+        {
+            var newHome = new Home
+            {
+                Name = GetTextBoxValue("NameTextBox"),
+                CityId = int.Parse(GetTextBoxValue("CityIdTextBox")),
+            };
+
+            _homeService.Add(newHome);
+            LoadData(TableSelector.SelectedItem.ToString());
+        }
+
         private string GetTextBoxValue(string textBoxName)
         {
             var textBox = DynamicFieldsPanel.Controls[textBoxName] as TextBox;
-            return textBox?.Text ?? string.Empty; // Возвращаем пустую строку, если текстовое поле не найдено
+            return textBox?.Text ?? string.Empty;
         }
 
         private void UpdateUser(int rowIndex)
@@ -232,6 +256,19 @@ namespace elle
             };
 
             _immovableService.Update(immovable);
+        }
+
+        private void UpdateHome(int rowIndex)
+        {
+            var homeId = (int)TableViewer.Rows[rowIndex].Cells["Id"].Value;
+            var home = new Home
+            {
+                Id = homeId,
+                Name = TableViewer.Rows[rowIndex].Cells["Name"].Value.ToString(),
+                CityId = int.Parse(TableViewer.Rows[rowIndex].Cells["CityId"].Value.ToString()),
+            };
+
+            _homeService.Update(home);
         }
     }
 }

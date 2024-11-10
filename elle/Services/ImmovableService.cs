@@ -51,6 +51,7 @@ namespace elle.Services
                 existingImmovable.Name = immovable.Name;
                 existingImmovable.Address = immovable.Address;
                 existingImmovable.Price = immovable.Price;
+                existingImmovable.HomeId = immovable.HomeId;
                 _context.SaveChanges();
             }
         }
