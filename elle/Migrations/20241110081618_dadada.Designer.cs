@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using elle;
@@ -11,9 +12,11 @@ using elle;
 namespace elle.Migrations
 {
     [DbContext(typeof(Context))]
-    partial class ContextModelSnapshot : ModelSnapshot
+    [Migration("20241110081618_dadada")]
+    partial class dadada
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,6 +78,9 @@ namespace elle.Migrations
 
                     b.Property<int>("HomeId")
                         .HasColumnType("integer");
+
+                    b.Property<bool>("IsRented")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

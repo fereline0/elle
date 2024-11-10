@@ -19,9 +19,11 @@ namespace elle
             services.AddScoped<UserService>();
             services.AddScoped<ImmovableService>();
             services.AddScoped<HomeService>();
+            services.AddScoped<CityService>();
             services.AddScoped<Context>();
             services.AddScoped<Authorization>();
             services.AddScoped<AdminPanel>();
+            services.AddScoped<ImmovableViewer>();
 
             var serviceProvider = services.BuildServiceProvider();
 

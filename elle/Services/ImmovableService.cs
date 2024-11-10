@@ -20,7 +20,7 @@ namespace elle.Services
 
         public List<Immovable> GetAllFree()
         {
-            return _context.Immovables.ToList();
+            return _context.Immovables.Where(i => i.RentEndDate > DateTime.UtcNow).ToList();
         }
 
         public bool DeleteById(int id)
@@ -51,6 +51,7 @@ namespace elle.Services
                 existingImmovable.Name = immovable.Name;
                 existingImmovable.Address = immovable.Address;
                 existingImmovable.Price = immovable.Price;
+                existingImmovable.RentEndDate = immovable.RentEndDate;
                 existingImmovable.HomeId = immovable.HomeId;
                 _context.SaveChanges();
             }

@@ -7,14 +7,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using elle.Services;
 
 namespace elle
 {
     public partial class ImmovableViewer : Form
     {
-        public ImmovableViewer()
+        private readonly ImmovableService _immovableService;
+
+        public ImmovableViewer(ImmovableService immovableService)
         {
             InitializeComponent();
+            _immovableService = immovableService;
+            TableViewer.DataSource = _immovableService.GetAllFree();
         }
     }
 }

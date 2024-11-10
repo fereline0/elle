@@ -23,19 +23,23 @@ namespace elle
             _serviceProvider = serviceProvider;
         }
 
-        private bool Authorize(string login, string password)
-        {
-            User user = _userService.FindUserByLogin(login);
-
-            return user != null && user.Password == password;
-        }
-
         private void HandleAuthorize_Click(object sender, EventArgs e)
         {
-            if (Authorize(Login.Text, Password.Text))
+            User user = _userService.FindUserByLogin(Login.Text);
+
+            if (user != null && user.Password == Password.Text)
             {
-                AdminPanel adminPanel = _serviceProvider.GetRequiredService<AdminPanel>();
-                adminPanel.ShowDialog();
+                if (user.Role == User.RoleType.Admin)
+                {
+                    AdminPanel adminPanel = _serviceProvider.GetRequiredService<AdminPanel>();
+                    adminPanel.ShowDialog();
+                }
+                else
+                {
+                    ImmovableViewer immovableViewer =
+                        _serviceProvider.GetRequiredService<ImmovableViewer>();
+                    immovableViewer.ShowDialog();
+                }
             }
             else
             {

@@ -28,12 +28,33 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Text = "ImmovableViewer";
+            TableViewer = new DataGridView();
+            ((System.ComponentModel.ISupportInitialize)TableViewer).BeginInit();
+            SuspendLayout();
+            // 
+            // TableViewer
+            // 
+            TableViewer.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            TableViewer.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            TableViewer.Location = new Point(12, 12);
+            TableViewer.Name = "TableViewer";
+            TableViewer.Size = new Size(776, 426);
+            TableViewer.TabIndex = 0;
+            // 
+            // ImmovableViewer
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(800, 450);
+            Controls.Add(TableViewer);
+            Name = "ImmovableViewer";
+            Text = "ImmovableViewer";
+            ((System.ComponentModel.ISupportInitialize)TableViewer).EndInit();
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private DataGridView TableViewer;
     }
 }

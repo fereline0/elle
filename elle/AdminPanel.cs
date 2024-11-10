@@ -11,8 +11,16 @@ namespace elle
         private readonly UserService _userService;
         private readonly ImmovableService _immovableService;
         private readonly HomeService _homeService;
+        private readonly CityService _cityService;
+        private DynamicFieldGenerator _fieldGenerator;
 
-        private readonly List<string> _tables = new List<string> { "Users", "Immovable", "Home" };
+        private readonly List<string> _tables = new List<string>
+        {
+            "Users",
+            "Immovable",
+            "Home",
+            "City",
+        };
         private readonly Dictionary<string, Action<int>> _updateActions;
         private readonly Dictionary<string, Action> _addActions;
         private bool _isUpdating = false;
@@ -20,13 +28,17 @@ namespace elle
         public AdminPanel(
             UserService userService,
             ImmovableService immovableService,
-            HomeService homeService
+            HomeService homeService,
+            CityService cityService
         )
         {
             InitializeComponent();
             _userService = userService;
             _immovableService = immovableService;
             _homeService = homeService;
+            _cityService = cityService;
+
+            _fieldGenerator = new DynamicFieldGenerator(DynamicFieldsPanel);
 
             TableSelector.DataSource = _tables;
 
@@ -35,6 +47,7 @@ namespace elle
                 { "Users", UpdateUser },
                 { "Immovable", UpdateImmovable },
                 { "Home", UpdateHome },
+                { "City", UpdateCity },
             };
 
             _addActions = new Dictionary<string, Action>
@@ -42,6 +55,7 @@ namespace elle
                 { "Users", AddUser },
                 { "Immovable", AddImmovable },
                 { "Home", AddHome },
+                { "City", AddCity },
             };
 
             LoadData(TableSelector.SelectedItem.ToString());
@@ -56,6 +70,7 @@ namespace elle
                     "Users" => _userService.GetAll(),
                     "Immovable" => _immovableService.GetAll(),
                     "Home" => _homeService.GetAll(),
+                    "City" => _cityService.GetAll(),
                     _ => throw new ArgumentException("Invalid table name"),
                 };
             }
@@ -101,6 +116,7 @@ namespace elle
                 "Users" => _userService.DeleteById(id),
                 "Immovable" => _immovableService.DeleteById(id),
                 "Home" => _homeService.DeleteById(id),
+                "City" => _cityService.DeleteById(id),
                 _ => throw new ArgumentException("Invalid table name"),
             };
 
@@ -141,43 +157,32 @@ namespace elle
 
         private void CreateDynamicFields(string tableName)
         {
-            DynamicFieldsPanel.Controls.Clear();
-
             var fields = tableName switch
             {
-                "Users" => new List<string> { "Login", "Password", "Role" },
-                "Immovable" => new List<string> { "Name", "Address", "Price", "HomeId" },
-                "Home" => new List<string> { "Name", "CityId" },
+                "Users" => new Dictionary<string, FieldType>
+                {
+                    { "Login", FieldType.TextBox },
+                    { "Password", FieldType.TextBox },
+                    { "Role", FieldType.TextBox },
+                },
+                "Immovable" => new Dictionary<string, FieldType>
+                {
+                    { "Name", FieldType.TextBox },
+                    { "Address", FieldType.TextBox },
+                    { "Price", FieldType.TextBox },
+                    { "RentEndDate", FieldType.DateTimePicker },
+                    { "HomeId", FieldType.TextBox },
+                },
+                "Home" => new Dictionary<string, FieldType>
+                {
+                    { "Name", FieldType.TextBox },
+                    { "CityId", FieldType.TextBox },
+                },
+                "City" => new Dictionary<string, FieldType> { { "Name", FieldType.TextBox } },
                 _ => throw new ArgumentException("Invalid table name"),
             };
 
-            CreateFields(fields);
-        }
-
-        private void CreateFields(IEnumerable<string> fields)
-        {
-            int yOffset = 0;
-
-            foreach (var field in fields)
-            {
-                var label = new Label
-                {
-                    Text = field,
-                    Location = new Point(0, yOffset),
-                    AutoSize = true,
-                };
-                DynamicFieldsPanel.Controls.Add(label);
-
-                var textBox = new TextBox
-                {
-                    Name = field + "TextBox",
-                    Location = new Point(0, yOffset + 20),
-                    Width = 150,
-                };
-                DynamicFieldsPanel.Controls.Add(textBox);
-
-                yOffset += 50;
-            }
+            _fieldGenerator.CreateFields(fields);
         }
 
         private void AddUser()
@@ -201,7 +206,7 @@ namespace elle
                 Name = GetTextBoxValue("NameTextBox"),
                 Address = GetTextBoxValue("AddressTextBox"),
                 Price = decimal.Parse(GetTextBoxValue("PriceTextBox")),
-                HomeId = int.Parse(GetTextBoxValue("CityIdTextBox")),
+                HomeId = int.Parse(GetTextBoxValue("HomeIdTextBox")),
             };
 
             _immovableService.Add(newImmovable);
@@ -217,6 +222,14 @@ namespace elle
             };
 
             _homeService.Add(newHome);
+            LoadData(TableSelector.SelectedItem.ToString());
+        }
+
+        private void AddCity()
+        {
+            var newCity = new City { Name = GetTextBoxValue("NameTextBox") };
+
+            _cityService.Add(newCity);
             LoadData(TableSelector.SelectedItem.ToString());
         }
 
@@ -247,12 +260,30 @@ namespace elle
         private void UpdateImmovable(int rowIndex)
         {
             var immovableId = (int)TableViewer.Rows[rowIndex].Cells["Id"].Value;
+
+            DateTime? rentEndDate = (DateTime?)
+                TableViewer.Rows[rowIndex].Cells["RentEndDate"].Value;
+
+            if (rentEndDate.HasValue)
+            {
+                if (rentEndDate.Value.Kind == DateTimeKind.Unspecified)
+                {
+                    rentEndDate = DateTime.SpecifyKind(rentEndDate.Value, DateTimeKind.Utc);
+                }
+                else
+                {
+                    rentEndDate = rentEndDate.Value.ToUniversalTime();
+                }
+            }
+
             var immovable = new Immovable
             {
                 Id = immovableId,
                 Name = TableViewer.Rows[rowIndex].Cells["Name"].Value.ToString(),
                 Address = TableViewer.Rows[rowIndex].Cells["Address"].Value.ToString(),
                 Price = decimal.Parse(TableViewer.Rows[rowIndex].Cells["Price"].Value.ToString()),
+                RentEndDate = rentEndDate,
+                HomeId = int.Parse(TableViewer.Rows[rowIndex].Cells["HomeId"].Value.ToString()),
             };
 
             _immovableService.Update(immovable);
@@ -269,6 +300,18 @@ namespace elle
             };
 
             _homeService.Update(home);
+        }
+
+        private void UpdateCity(int rowIndex)
+        {
+            var cityId = (int)TableViewer.Rows[rowIndex].Cells["Id"].Value;
+            var city = new City
+            {
+                Id = cityId,
+                Name = TableViewer.Rows[rowIndex].Cells["Name"].Value.ToString(),
+            };
+
+            _cityService.Update(city);
         }
     }
 }
