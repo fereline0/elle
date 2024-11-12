@@ -207,10 +207,17 @@ namespace elle
                 Address = GetTextBoxValue("AddressTextBox"),
                 Price = decimal.Parse(GetTextBoxValue("PriceTextBox")),
                 HomeId = int.Parse(GetTextBoxValue("HomeIdTextBox")),
+                RentEndDate = GetDateTimePickerValue("RentEndDateDateTimePicker"),
             };
 
             _immovableService.Add(newImmovable);
             LoadData(TableSelector.SelectedItem.ToString());
+        }
+
+        private DateTime? GetDateTimePickerValue(string dateTimePickerName)
+        {
+            var dateTimePicker = DynamicFieldsPanel.Controls[dateTimePickerName] as DateTimePicker;
+            return dateTimePicker?.Value.ToUniversalTime();
         }
 
         private void AddHome()
